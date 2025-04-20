@@ -44,7 +44,7 @@ Cette application web développée avec Angular permet de gérer les devoirs et 
 
 1. Cloner le repository :
 \`\`\`bash
-git clone [URL_DU_REPO]
+git clone https://github.com/donourouh/angular_mbds.git
 \`\`\`
 
 2. Installer les dépendances du Frontend :
@@ -124,7 +124,7 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 - Soumettre des pull requests
 
 ## Auteur
-KINDO Bamba
+Bamba Ahmed Donourouh & Kindo Mohamed
 
 ## Licence
 Ce projet est sous licence MIT. 
