@@ -1,0 +1,7 @@
+{
+    "root": "dist/assignment-app",
+    "routes": {
+      "/**": "index.html"
+    }
+  }
+  
