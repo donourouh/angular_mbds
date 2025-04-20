@@ -1,0 +1,111 @@
+<h3>Ajout de devoir</h3>
+<mat-stepper [linear]="isLinear">
+  <!-- Étape 1 : Informations de base -->
+  <mat-step [stepControl]="basicInfoForm">
+    <form [formGroup]="basicInfoForm">
+      <ng-template matStepLabel>Informations de base</ng-template>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Nom du devoir</mat-label>
+        <input matInput formControlName="nom" required>
+        <mat-error *ngIf="basicInfoForm.get('nom')?.hasError('required')">
+          Le nom est requis
+        </mat-error>
+        <mat-error *ngIf="basicInfoForm.get('nom')?.hasError('minlength')">
+          Le nom doit contenir au moins 3 caractères
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Auteur</mat-label>
+        <input matInput formControlName="auteur" required>
+        <mat-error *ngIf="basicInfoForm.get('auteur')?.hasError('required')">
+          L'auteur est requis
+        </mat-error>
+        <mat-error *ngIf="basicInfoForm.get('auteur')?.hasError('minlength')">
+          L'auteur doit contenir au moins 3 caractères
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date de rendu</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dateDeRendu" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="basicInfoForm.get('dateDeRendu')?.hasError('required')">
+          La date de rendu est requise
+        </mat-error>
+      </mat-form-field>
+
+      <div>
+        <button mat-button matStepperNext>Suivant</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Étape 2 : Sélection de la matière -->
+  <mat-step [stepControl]="matiereForm">
+    <form [formGroup]="matiereForm">
+      <ng-template matStepLabel>Matière</ng-template>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Matière</mat-label>
+        <mat-select formControlName="matiere" required>
+          <mat-option *ngFor="let matiere of matieres" [value]="matiere">
+            <div class="matiere-option">
+              <img [src]="matiere.imageMatiere" class="matiere-icon" [alt]="matiere.nom">
+              <span>{{matiere.nom}} - Prof: {{matiere.prof.nom}}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="matiereForm.get('matiere')?.hasError('required')">
+          La matière est requise
+        </mat-error>
+      </mat-form-field>
+
+      <div *ngIf="selectedMatiere" class="matiere-selected">
+        <p>Professeur : {{selectedMatiere.prof.nom}}</p>
+        <img [src]="selectedMatiere.imageMatiere" *ngIf="selectedMatiere.imageMatiere" alt="Image matière" class="matiere-image">
+      </div>
+
+      <div>
+        <button mat-button matStepperPrevious>Retour</button>
+        <button mat-button matStepperNext>Suivant</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Étape 3 : État et remarques -->
+  <mat-step [stepControl]="stateForm">
+    <form [formGroup]="stateForm" (ngSubmit)="onSubmit()">
+      <ng-template matStepLabel>État et remarques</ng-template>
+      
+      <mat-checkbox formControlName="rendu">Devoir rendu</mat-checkbox>
+
+      <mat-form-field appearance="outline" *ngIf="stateForm.get('rendu')?.value">
+        <mat-label>Note</mat-label>
+        <input matInput type="number" formControlName="note" min="0" max="20">
+        <mat-error *ngIf="stateForm.get('note')?.hasError('required')">
+          La note est requise pour un devoir rendu
+        </mat-error>
+        <mat-error *ngIf="stateForm.get('note')?.hasError('min') || stateForm.get('note')?.hasError('max')">
+          La note doit être comprise entre 0 et 20
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Remarques</mat-label>
+        <textarea matInput formControlName="remarques" rows="4"></textarea>
+      </mat-form-field>
+
+      <div>
+        <button mat-button matStepperPrevious>Retour</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!isFormValid()">
+          <mat-icon>add</mat-icon>
+          Ajouter le devoir
+        </button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>
+

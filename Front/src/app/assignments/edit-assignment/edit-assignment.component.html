@@ -1,0 +1,101 @@
+@if(assignment) {
+    <div class="edit-container">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Modifier le devoir</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="assignmentForm" (ngSubmit)="onSubmit()" class="edit-form">
+            <!-- Informations de base -->
+            <div class="form-section">
+              <h3>Informations générales</h3>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Nom du devoir</mat-label>
+                <input matInput formControlName="nom" required>
+                <mat-error *ngIf="assignmentForm.get('nom')?.hasError('required')">
+                  Le nom est requis
+                </mat-error>
+                <mat-error *ngIf="assignmentForm.get('nom')?.hasError('minlength')">
+                  Le nom doit contenir au moins 3 caractères
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Auteur</mat-label>
+                <input matInput formControlName="auteur" required>
+                <mat-error *ngIf="assignmentForm.get('auteur')?.hasError('required')">
+                  L'auteur est requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Date de rendu</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="dateDeRendu" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="assignmentForm.get('dateDeRendu')?.hasError('required')">
+                  La date de rendu est requise
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Matière -->
+            <div class="form-section">
+              <h3>Matière</h3>
+              
+              <mat-form-field>
+                <mat-label>Matière</mat-label>
+                <mat-select formControlName="matiere" required>
+                  <mat-option *ngFor="let matiere of matieres" [value]="matiere">
+                    <div class="matiere-option">
+                      <img [src]="matiere.imageMatiere" class="matiere-icon" [alt]="matiere.nom">
+                      <span>{{matiere.nom}} - Prof: {{matiere.prof.nom}}</span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- État et évaluation -->
+            <div class="form-section">
+              <h3>État et évaluation</h3>
+              
+              <mat-checkbox formControlName="rendu" class="rendu-checkbox">
+                Devoir rendu
+              </mat-checkbox>
+
+              <mat-form-field appearance="outline" *ngIf="assignmentForm.get('rendu')?.value">
+                <mat-label>Note sur 20</mat-label>
+                <input matInput type="number" formControlName="note" min="0" max="20">
+                <mat-error *ngIf="assignmentForm.get('note')?.hasError('required')">
+                  La note est requise pour un devoir rendu
+                </mat-error>
+                <mat-error *ngIf="assignmentForm.get('note')?.hasError('min') || assignmentForm.get('note')?.hasError('max')">
+                  La note doit être comprise entre 0 et 20
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Remarques</mat-label>
+                <textarea matInput formControlName="remarques" rows="4"></textarea>
+              </mat-form-field>
+            </div>
+          </form>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+          <button mat-button (click)="onCancel()">
+            <mat-icon>cancel</mat-icon>
+            Annuler
+          </button>
+          <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!assignmentForm.valid">
+            <mat-icon>save</mat-icon>
+            Enregistrer
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+}
+       

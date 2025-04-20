@@ -1,0 +1,177 @@
+.rendu {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.nonRendu {
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 2px solid #e65100;
+}
+
+table {
+  width: 100%;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mat-column-nom {  
+  width: 400px;
+  border-right: 1px solid currentColor;
+  padding-right: 24px;
+  font-style: italic;
+}
+
+.mat-column-dateDeRendu {
+  width: 120px;
+}
+
+.mat-column-demo-rendu {
+  font-style: italic;
+  text-align: center;
+}
+
+.mat-column-demo-id {
+  text-align: center;
+  font-weight: bold;
+}
+
+.assignments-container {
+padding: 20px;
+}
+
+.pagination-info {
+margin: 20px 0;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.limit-selector {
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.pagination-controls {
+margin-top: 20px;
+display: flex;
+justify-content: center;
+gap: 8px;
+}
+
+.pagination-controls button {
+min-width: 100px;
+}
+
+.mat-header-cell {
+background-color: #fff3e0;
+color: #e65100;
+font-weight: bold;
+font-size: 14px;
+padding: 16px !important;
+}
+
+.mat-cell {
+padding: 16px !important;
+font-size: 14px;
+color: #e65100;
+}
+
+.mat-row:hover {
+background-color: #fff3e0;
+}
+
+.mat-row:nth-child(even) {
+background-color: #fff3e0;
+}
+
+.mat-column-rendu {
+width: 120px;
+}
+
+.mat-column-note {
+width: 80px;
+text-align: center;
+}
+
+.mat-column-actions {
+width: 120px;
+text-align: center;
+}
+
+.mat-column-actions button {
+opacity: 0.8;
+transition: opacity 0.2s;
+}
+
+.mat-column-actions button:hover {
+opacity: 1;
+}
+
+.status-chip {
+padding: 4px 8px;
+border-radius: 4px;
+font-size: 12px;
+font-weight: 500;
+}
+
+.status-rendu {
+background-color: #fff3e0;
+color: #e65100;
+}
+
+.status-non-rendu {
+background-color: #fff3e0;
+color: #e65100;
+}
+
+.assignment-row {
+transition: background-color 0.3s;
+}
+
+.assignment-row:hover {
+background-color: rgba(103, 58, 183, 0.1);
+cursor: pointer;
+}
+
+.matiere-cell {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.matiere-icon {
+width: 24px;
+height: 24px;
+border-radius: 4px;
+object-fit: cover;
+}
+
+.matiere-cell small {
+color: rgba(0, 0, 0, 0.6);
+}
+
+.non-note {
+color: var(--text-secondary);
+font-style: italic;
+}
+
+.clickable {
+color: var(--primary-color);
+text-decoration: underline;
+cursor: pointer;
+}
+
+mat-chip {
+min-height: 24px;
+}
+
+.mat-column-remarques {
+max-width: 200px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}

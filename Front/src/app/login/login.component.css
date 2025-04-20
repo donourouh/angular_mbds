@@ -1,0 +1,35 @@
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 30px;
+  background-color: var(--secondary-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+button {
+  width: 100%;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+mat-error {
+  color: var(--primary-color);
+  font-size: 0.9em;
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+}

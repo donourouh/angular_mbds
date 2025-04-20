@@ -1,0 +1,41 @@
+<div class="matieres-container">
+  <div class="header">
+    <h2>Liste des Matières</h2>
+    <button mat-raised-button color="primary" (click)="addNewMatiere()">
+      <mat-icon>add</mat-icon>
+      Ajouter une matière
+    </button>
+  </div>
+
+  <div class="matieres-grid">
+    <mat-card *ngFor="let matiere of matieres" class="matiere-card">
+      <mat-card-header>
+        <div mat-card-avatar class="matiere-avatar" 
+             [style.backgroundImage]="'url(' + matiere.imageMatiere + ')'">
+        </div>
+        <mat-card-title>{{matiere.nom}}</mat-card-title>
+        <mat-card-subtitle>Prof: {{matiere.prof.nom}}</mat-card-subtitle>
+      </mat-card-header>
+
+      <img mat-card-image [src]="matiere.imageMatiere" [alt]="matiere.nom" class="matiere-image">
+
+      <mat-card-content>
+        <p>Professeur: {{matiere.prof.nom}}</p>
+        <div class="prof-photo" *ngIf="matiere.prof.photo">
+          <img [src]="matiere.prof.photo" [alt]="matiere.prof.nom">
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="onEdit(matiere)">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+        <button mat-button color="warn" (click)="onDelete(matiere)">
+          <mat-icon>delete</mat-icon>
+          Supprimer
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

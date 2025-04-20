@@ -1,0 +1,9 @@
+<mat-toolbar color="primary">
+  <span>Premier projet Angular</span>
+  <span class="spacer"></span>
+  <ng-container *ngIf="roleConnecte">
+    <span>Connecté en tant que <strong>{{ roleConnecte }}</strong></span>
+    <button mat-button (click)="deconnexion()">Déconnexion</button>
+  </ng-container>
+</mat-toolbar>
+<app-navigation></app-navigation>

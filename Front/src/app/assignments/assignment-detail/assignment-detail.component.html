@@ -1,0 +1,75 @@
+<div class="assignment-detail-container" *ngIf="assignmentTransmis">
+  <mat-card class="assignment-card">
+    <mat-card-header>
+      <div mat-card-avatar class="subject-avatar" 
+           [style.background-image]="'url(' + assignmentTransmis.imageMatiere + ')'">
+      </div>
+      <mat-card-title>{{assignmentTransmis.nom}}</mat-card-title>
+      <mat-card-subtitle>{{assignmentTransmis.matiere}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="info-section">
+        <div class="info-row">
+          <mat-icon>calendar_today</mat-icon>
+          <span>Date de rendu : {{assignmentTransmis.dateDeRendu | date:'fullDate':'':'fr-FR'}}</span>
+        </div>
+        
+        <div class="info-row">
+          <mat-icon>person</mat-icon>
+          <span>Auteur : {{assignmentTransmis.auteur}}</span>
+        </div>
+
+        <div class="info-row">
+          <mat-icon>school</mat-icon>
+          <span>Professeur : {{assignmentTransmis.prof}}</span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="status-section">
+          <mat-chip-listbox>
+            <mat-chip [color]="assignmentTransmis.rendu ? 'accent' : 'warn'" selected>
+              {{assignmentTransmis.rendu ? 'Rendu' : 'Non rendu'}}
+            </mat-chip>
+          </mat-chip-listbox>
+
+          @if(assignmentTransmis.rendu) {
+            <div class="grade-section">
+              <mat-icon [color]="assignmentTransmis && assignmentTransmis.note !== undefined && assignmentTransmis.note >= 10 ? 'accent' : 'warn'">
+                {{assignmentTransmis && assignmentTransmis.note !== undefined && assignmentTransmis.note >= 10 ? 'grade' : 'warning'}}
+              </mat-icon>
+              <span>Note : {{assignmentTransmis.note}}/20</span>
+            </div>
+          }
+        </div>
+
+        @if(assignmentTransmis.remarques) {
+          <div class="remarks-section">
+            <mat-icon>comment</mat-icon>
+            <p>{{assignmentTransmis.remarques}}</p>
+          </div>
+        }
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      @if(!assignmentTransmis.rendu) {
+        <button mat-raised-button color="accent" (click)="assignmentRendu()">
+          <mat-icon>check</mat-icon>
+          Marquer comme rendu
+        </button>
+      }
+
+      <button mat-raised-button color="primary" [routerLink]="['/assignments', assignmentTransmis._id, 'edit']">
+        <mat-icon>edit</mat-icon>
+        Modifier
+      </button>
+
+      <button mat-raised-button color="warn" (click)="onDeleteAssignment()">
+        <mat-icon>delete</mat-icon>
+        Supprimer
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
