@@ -78,9 +78,9 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Routes pour l'authentification - DOIT ÊTRE AVANT LES AUTRES ROUTES
+// Routes pour l'authentification
 const authRoute = require('./routes/auth');
-app.use('/api', authRoute);
+app.use('/api/auth', authRoute);
 
 // Routes API
 app.use('/api/assignments', assignment);
@@ -91,9 +91,9 @@ app.get('/', (req, res) => {
   res.json({ 
     message: "API Assignment fonctionnelle !", 
     endpoints: {
+      auth: "/api/auth/login",
       assignments: "/api/assignments",
-      matieres: "/api/matieres",
-      auth: "/api/login"
+      matieres: "/api/matieres"
     }
   });
 });
@@ -101,7 +101,14 @@ app.get('/', (req, res) => {
 // Gestion des erreurs 404
 app.use((req, res, next) => {
   console.log(`❌ Route non trouvée: ${req.method} ${req.url}`);
-  res.status(404).json({ message: `Route non trouvée: ${req.method} ${req.url}` });
+  res.status(404).json({ 
+    message: `Route non trouvée: ${req.method} ${req.url}`,
+    availableEndpoints: {
+      auth: "/api/auth/login",
+      assignments: "/api/assignments",
+      matieres: "/api/matieres"
+    }
+  });
 });
 
 // Gestion des erreurs
