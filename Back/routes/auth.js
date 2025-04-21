@@ -3,6 +3,14 @@ const router = express.Router();
 const User = require('../model/user');
 const jwt = require('jsonwebtoken');
 
+// Route de test pour vérifier que l'authentification est accessible
+router.get('/login', (req, res) => {
+  res.json({
+    message: "Route d'authentification fonctionnelle",
+    usage: "Utilisez POST /api/login avec { login: 'admin', password: 'admin' }"
+  });
+});
+
 router.post('/login', async (req, res) => {
   console.log('⭐ Tentative de connexion reçue:', req.body);
   const { login, password } = req.body;
