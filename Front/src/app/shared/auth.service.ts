@@ -1,32 +1,60 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private roleKey = 'userRole';
+  private tokenKey = 'token';
 
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<any>('http://localhost:8010/api/login', { login: username, password })
+    console.log('Tentative de connexion à:', `${environment.apiUrl}/login`);
+    return this.http.post<any>(`${environment.apiUrl}/login`, { login: username, password })
       .pipe(
+        tap(res => console.log('Réponse du serveur:', res)),
         map(res => {
-          localStorage.setItem(this.roleKey, res.role); // On stocke le rôle de l'utilisateur
-          return true;
+          if (res && res.token) {
+            console.log('Token reçu, sauvegarde...');
+            localStorage.setItem(this.tokenKey, res.token);
+            localStorage.setItem(this.roleKey, res.role);
+            return true;
+          }
+          console.log('Pas de token dans la réponse');
+          return false;
         }),
-        catchError(() => {
+        catchError((error: HttpErrorResponse) => {
+          console.error('Erreur de connexion:', error);
+          if (error.error instanceof ErrorEvent) {
+            // Erreur côté client
+            console.error('Erreur côté client:', error.error.message);
+          } else {
+            // Erreur côté serveur
+            console.error(
+              `Code d'erreur ${error.status}, ` +
+              `Message: ${error.error.message}`);
+          }
           return of(false);
         })
       );
   }
 
   logout(): void {
+    console.log('Déconnexion...');
     localStorage.removeItem(this.roleKey);
+    localStorage.removeItem(this.tokenKey);
     window.location.href = '/login';
+  }
+
+  getToken(): string | null {
+    const token = localStorage.getItem(this.tokenKey);
+    console.log('Token récupéré:', token ? 'présent' : 'absent');
+    return token;
   }
 
   getUserRole(): string | null {
@@ -38,7 +66,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.getUserRole() !== null;
+    const token = this.getToken();
+    const role = this.getUserRole();
+    const isLogged = token !== null && role !== null;
+    console.log('État de connexion:', isLogged);
+    return isLogged;
   }
 
   isAdmin(): boolean {

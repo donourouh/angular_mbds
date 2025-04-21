@@ -1,4 +1,4 @@
-import { MatCardModule } from '@angular/material/card'; // Import manquant
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,9 @@ import { Router } from '@angular/router';
 import { AuthService } from '../shared/auth.service';
 import { NgIf } from '@angular/common';
 import { MatError } from '@angular/material/form-field';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
@@ -24,26 +27,71 @@ import { MatError } from '@angular/material/form-field';
     NgIf,
     MatError,
     MatIconModule,
-    MatCardModule // Ajout de MatCardModule
+    MatCardModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ]
 })
 export class LoginComponent {
-  username = '';
-  password = '';
-  loginFailed = false;
-  loading = false;
+  username: string = '';
+  password: string = '';
+  loginFailed: boolean = false;
+  loading: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
 
   onLogin() {
+    if (!this.username || !this.password) {
+      this.snackBar.open('Veuillez remplir tous les champs', 'Fermer', {
+        duration: 3000
+      });
+      return;
+    }
+
     this.loading = true;
-    this.authService.login(this.username, this.password).subscribe(success => {
-      this.loading = false;
-      if (success) {
-        const role = this.authService.getUserRole();
-        this.router.navigate([role === 'admin' ? '/stats' : '/home']);
-      } else {
+    this.loginFailed = false;
+
+    console.log('Tentative de connexion avec:', { username: this.username });
+
+    this.authService.login(this.username, this.password).subscribe({
+      next: (success) => {
+        this.loading = false;
+        if (success) {
+          console.log('Connexion réussie');
+          const role = this.authService.getUserRole();
+          if (role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/home']);
+          }
+          this.snackBar.open('Connexion réussie !', 'Fermer', {
+            duration: 3000
+          });
+        } else {
+          console.log('Échec de la connexion');
+          this.loginFailed = true;
+          this.snackBar.open('Identifiants incorrects', 'Fermer', {
+            duration: 3000
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors de la connexion:', error);
+        this.loading = false;
         this.loginFailed = true;
+        let message = 'Erreur lors de la connexion';
+        if (error.status === 0) {
+          message = 'Impossible de contacter le serveur';
+        } else if (error.error && error.error.message) {
+          message = error.error.message;
+        }
+        this.snackBar.open(message, 'Fermer', {
+          duration: 5000
+        });
       }
     });
   }

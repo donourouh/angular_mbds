@@ -125,21 +125,42 @@ export class AddAssignmentComponent implements OnInit {
         prof: this.selectedMatiere.prof.nom
       };
 
+      console.log('Tentative d\'ajout du devoir:', assignment);
+
       this.assignmentsService.addAssignment(assignment).subscribe({
         next: (response) => {
+          console.log('Réponse après ajout:', response);
           this.snackBar.open('Devoir ajouté avec succès', 'OK', {
             duration: 2000
           });
           this.router.navigate(['/home']);
         },
         error: (error) => {
-          console.error('Erreur lors de l\'ajout du devoir:', error);
-          this.snackBar.open('Erreur lors de l\'ajout du devoir', 'Fermer', {
-            duration: 3000
+          console.error('Erreur détaillée lors de l\'ajout:', error);
+          let errorMessage = 'Erreur lors de l\'ajout du devoir';
+          
+          if (error.error && error.error.message) {
+            errorMessage += ': ' + error.error.message;
+          }
+          
+          if (error.status === 401) {
+            errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+            this.router.navigate(['/login']);
+          }
+          
+          this.snackBar.open(errorMessage, 'Fermer', {
+            duration: 5000
           });
         }
       });
     } else {
+      console.log('Formulaire invalide:', {
+        basicInfo: this.basicInfoForm.valid,
+        matiere: this.matiereForm.valid,
+        state: this.stateForm.valid,
+        selectedMatiere: this.selectedMatiere
+      });
+      
       this.snackBar.open('Veuillez remplir tous les champs requis', 'Fermer', {
         duration: 3000
       });

@@ -8,10 +8,11 @@ const authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: 'Token manquant. Veuillez vous connecter.' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, 'votre_secret_jwt');
     req.user = decoded;
     next();
   } catch (error) {
+    console.error('Erreur de vérification du token:', error);
     return res.status(401).json({ message: 'Token invalide ou expiré. Veuillez vous reconnecter.' });
   }
 };
