@@ -1,7 +1,7 @@
 {
     "root": "dist/assignment-app",
     "routes": {
-      "/**": "login.component.html"
+      "/**": "app.component.html"
     }
   }
   
