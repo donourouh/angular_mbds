@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 router.get('/login', (req, res) => {
   res.json({
     message: "Route d'authentification fonctionnelle",
-    usage: "Utilisez POST /api/login avec { login: 'admin', password: 'admin' }"
+    usage: "Utilisez POST /api/auth/login avec { login: 'admin', password: 'admin' }"
   });
 });
 
