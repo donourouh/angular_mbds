@@ -9,7 +9,7 @@ let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 // Connexion à MongoDB Atlas
-const uri = "mongodb+srv://bambahamed2001:iwWvGOWdqeDXabCj@cluster0.o4qau0o.mongodb.net/assignments?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGODB_URI || "mongodb+srv://bambahamed2001:iwWvGOWdqeDXabCj@cluster0.o4qau0o.mongodb.net/assignments?retryWrites=true&w=majority&appName=Cluster0";
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,6 +19,7 @@ const options = {
 mongoose.connect(uri, options)
   .then(() => {
     console.log("✅ Connecté à la base MongoDB assignments dans le cloud !");
+    console.log("URI de connexion utilisée:", uri.replace(/mongodb\+srv:\/\/[^:]+:[^@]+@/, 'mongodb+srv://****:****@'));
   }, err => {
     console.log('❌ Erreur de connexion : ', err);
   });

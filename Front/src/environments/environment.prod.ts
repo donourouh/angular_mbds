@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://angular-bamba-kindo.onrender.com/api' 
+  apiUrl: 'https://votre-api-backend.onrender.com/api' 
 }; 
