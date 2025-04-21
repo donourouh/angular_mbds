@@ -1,0 +1,8 @@
+{
+  "name": "angular-mbds",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd Back && node server.js",
+    "install": "cd Back && npm install"
+  }
+} 

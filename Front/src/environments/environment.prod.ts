@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://angular-mbds-backend.onrender.com'
+  apiUrl: 'https://angular-mbds-backend.onrender.com/api'
 }; 
