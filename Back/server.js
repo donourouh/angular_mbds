@@ -24,11 +24,18 @@ mongoose.connect(uri, options)
     console.log('❌ Erreur de connexion : ', err);
   });
 
-// Middleware CORS
+// Middleware CORS - Accepte les requêtes de n'importe quelle origine
 app.use(function (req, res, next) {
+  // Accepte les requêtes de toutes les origines en production
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  
+  // Gestion des requêtes OPTIONS pour le preflight CORS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   next();
 });
 
@@ -72,7 +79,10 @@ app.get('*', (req, res) => {
 // Gestion des erreurs
 app.use((err, req, res, next) => {
   console.error('Erreur serveur:', err);
-  res.status(500).send('Erreur serveur interne');
+  res.status(500).json({ 
+    message: 'Erreur serveur interne',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 // Démarrage du serveur
