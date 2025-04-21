@@ -1,7 +1,6 @@
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
-let path = require('path');
 
 let assignment = require('./routes/assignments');
 let matieres = require('./routes/matieres');
@@ -43,12 +42,6 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Servir les fichiers statiques du build Angular
-console.log('📂 Dossier courant:', __dirname);
-const distPath = path.join(__dirname, 'dist');
-console.log('📂 Chemin du dossier dist:', distPath);
-app.use(express.static(distPath));
-
 // Routes API
 app.use('/api/assignments', assignment);
 app.use('/api/matieres', matieres);
@@ -57,23 +50,16 @@ app.use('/api/matieres', matieres);
 const authRoute = require('./routes/auth');
 app.use('/api', authRoute);
 
-// Route pour toutes les autres requêtes -> renvoie vers l'application Angular
-app.get('*', (req, res) => {
-  try {
-    const indexPath = path.join(distPath, 'index.html');
-    console.log('🔍 Tentative d\'accès à:', indexPath);
-    
-    if (!require('fs').existsSync(indexPath)) {
-      console.log('❌ Fichier non trouvé:', indexPath);
-      return res.status(404).send('index.html non trouvé. Chemin: ' + indexPath);
+// Route racine pour vérifier que l'API fonctionne
+app.get('/', (req, res) => {
+  res.json({ 
+    message: "API Assignment fonctionnelle !", 
+    endpoints: {
+      assignments: "/api/assignments",
+      matieres: "/api/matieres",
+      auth: "/api/login"
     }
-    
-    console.log('✅ Fichier trouvé, envoi de index.html');
-    res.sendFile(indexPath);
-  } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi de index.html:', error);
-    res.status(500).send('Erreur serveur lors de l\'envoi de index.html');
-  }
+  });
 });
 
 // Gestion des erreurs
