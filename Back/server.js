@@ -61,16 +61,16 @@ mongoose.connect(uri, options)
 
 // Middleware CORS - Accepte les requêtes de n'importe quelle origine
 app.use(function (req, res, next) {
-  // Accepte les requêtes de toutes les origines en production
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   
-  // Gestion des requêtes OPTIONS pour le preflight CORS
+  // Log de toutes les requêtes pour le débogage
+  console.log(`📨 ${req.method} ${req.url}`);
+  
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
   next();
 });
 
@@ -78,13 +78,13 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Routes pour l'authentification - DOIT ÊTRE AVANT LES AUTRES ROUTES
+const authRoute = require('./routes/auth');
+app.use('/api', authRoute);
+
 // Routes API
 app.use('/api/assignments', assignment);
 app.use('/api/matieres', matieres);
-
-// Routes pour l'authentification
-const authRoute = require('./routes/auth');
-app.use('/api', authRoute);
 
 // Route racine pour vérifier que l'API fonctionne
 app.get('/', (req, res) => {
@@ -98,9 +98,15 @@ app.get('/', (req, res) => {
   });
 });
 
+// Gestion des erreurs 404
+app.use((req, res, next) => {
+  console.log(`❌ Route non trouvée: ${req.method} ${req.url}`);
+  res.status(404).json({ message: `Route non trouvée: ${req.method} ${req.url}` });
+});
+
 // Gestion des erreurs
 app.use((err, req, res, next) => {
-  console.error('Erreur serveur:', err);
+  console.error('❌ Erreur serveur:', err);
   res.status(500).json({ 
     message: 'Erreur serveur interne',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
