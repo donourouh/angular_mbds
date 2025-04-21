@@ -20,7 +20,6 @@ const options = {
 mongoose.connect(uri, options)
   .then(() => {
     console.log("✅ Connecté à la base MongoDB assignments dans le cloud !");
-    console.log("🌍 Vérifiez sur : http://localhost:8010/api/assignments");
   }, err => {
     console.log('❌ Erreur de connexion : ', err);
   });
@@ -37,6 +36,12 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Servir les fichiers statiques du build Angular
+console.log('📂 Dossier courant:', __dirname);
+const distPath = path.join(__dirname, 'dist');
+console.log('📂 Chemin du dossier dist:', distPath);
+app.use(express.static(distPath));
+
 // Routes API
 app.use('/api/assignments', assignment);
 app.use('/api/matieres', matieres);
@@ -44,11 +49,6 @@ app.use('/api/matieres', matieres);
 // Routes pour l'authentification
 const authRoute = require('./routes/auth');
 app.use('/api', authRoute);
-
-// Servir les fichiers statiques du build Angular
-const distPath = path.join(__dirname, '../Front/dist/assignment-app');
-console.log('📂 Chemin du dossier dist:', distPath);
-app.use(express.static(distPath));
 
 // Route pour toutes les autres requêtes -> renvoie vers l'application Angular
 app.get('*', (req, res) => {
@@ -69,9 +69,22 @@ app.get('*', (req, res) => {
   }
 });
 
+// Gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error('Erreur serveur:', err);
+  res.status(500).send('Erreur serveur interne');
+});
+
 // Démarrage du serveur
-let port = process.env.PORT || 8010;
-app.listen(port, "0.0.0.0");
-console.log('🚀 Serveur démarré sur : http://localhost:' + port);
+const port = process.env.PORT || 8010;
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log('🚀 Serveur démarré sur le port:', port);
+}).on('error', (err) => {
+  console.error('❌ Erreur de démarrage du serveur:', err);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+});
 
 module.exports = app;
