@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 
 let assignment = require('./routes/assignments');
 let matieres = require('./routes/matieres');
+let User = require('./model/user');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -16,10 +17,44 @@ const options = {
   useFindAndModify: false
 };
 
+// Fonction pour initialiser les utilisateurs
+async function initUsers() {
+  try {
+    // Vérifier si un utilisateur admin existe déjà
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (!adminExists) {
+      // Créer l'utilisateur admin
+      const admin = new User({
+        login: 'admin',
+        password: 'admin',
+        role: 'admin'
+      });
+      await admin.save();
+      console.log("✅ Utilisateur admin créé");
+    }
+
+    // Créer un utilisateur normal s'il n'existe pas
+    const userExists = await User.findOne({ role: 'user' });
+    if (!userExists) {
+      const user = new User({
+        login: 'user',
+        password: 'user',
+        role: 'user'
+      });
+      await user.save();
+      console.log("✅ Utilisateur normal créé");
+    }
+  } catch (error) {
+    console.error("❌ Erreur lors de l'initialisation des utilisateurs:", error);
+  }
+}
+
 mongoose.connect(uri, options)
-  .then(() => {
+  .then(async () => {
     console.log("✅ Connecté à la base MongoDB assignments dans le cloud !");
-    console.log("URI de connexion utilisée:", uri.replace(/mongodb\+srv:\/\/[^:]+:[^@]+@/, 'mongodb+srv://****:****@'));
+    // Initialiser les utilisateurs après la connexion
+    await initUsers();
+    console.log("✅ Initialisation des utilisateurs terminée");
   }, err => {
     console.log('❌ Erreur de connexion : ', err);
   });
