@@ -1,7 +1,8 @@
 {
     "root": "dist/assignment-app",
     "routes": {
-      "/**": "app.component.html"
-    }
+      "/**": "login.component.html"
+    },
+    "clean_urls": true
   }
   
