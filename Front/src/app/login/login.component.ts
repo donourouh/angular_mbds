@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../shared/auth.service';
@@ -22,6 +22,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './login.component.css',
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -37,6 +38,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   hide = true;
+  loginFailed = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -69,6 +71,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
+    this.loginFailed = false;
     console.log('🔄 Tentative de connexion...');
 
     const { username, password } = this.loginForm.value;
@@ -80,11 +83,13 @@ export class LoginComponent implements OnInit {
           this.redirectBasedOnRole();
         } else {
           console.log('❌ Échec de la connexion');
+          this.loginFailed = true;
           this.showError('Identifiants incorrects');
         }
       },
       error: (error) => {
         console.error('❌ Erreur lors de la connexion:', error);
+        this.loginFailed = true;
         this.showError('Une erreur est survenue lors de la connexion');
       },
       complete: () => {
