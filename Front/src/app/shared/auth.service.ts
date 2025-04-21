@@ -14,7 +14,11 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<boolean> {
-    const loginUrl = `${environment.apiUrl}/api/auth/login`;
+    const baseUrl = environment.apiUrl.endsWith('/api') 
+      ? environment.apiUrl
+      : `${environment.apiUrl}/api`;
+    
+    const loginUrl = `${baseUrl}/auth/login`;
     console.log('Tentative de connexion à:', loginUrl);
     
     return this.http.post<any>(loginUrl, { login: username, password })
